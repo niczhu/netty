@@ -303,11 +303,26 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
         }
     }
 
+    /**
+     * initAndRegister 方法会反射创建 NioServerSocketChannel  及其相关的 NIO 的对象，
+     * pipeline ， unsafe，同时也为 pipeline 初始了 head 节点和
+     * tail 节点。同时也含有 NioServerSocketChannelConfig 对象。然后向 pipeline
+     * 添加自定义的处理器和 ServerBootstrapAcceptor 处理器。这个处理器用于分配接受的
+     * 请求给 worker 线程池。每次添加处理器都会创建一个相对应的 Context 作为 pipeline 的节点并包装 handler 对象。
+     * 注册过程中会调用  NioServerSocketChannel   的 doRegister 方法注册读事件。
+     *
+     * @return
+     */
     final ChannelFuture initAndRegister() {
+
         Channel channel = null;
+
         try {
+
+            // 通过反射创建 ReflectiveChannelFactory
             channel = channelFactory.newChannel();
             init(channel);
+
         } catch (Throwable t) {
             if (channel != null) {
                 // channel can be null if newChannel crashed (eg SocketException("too many open files"))

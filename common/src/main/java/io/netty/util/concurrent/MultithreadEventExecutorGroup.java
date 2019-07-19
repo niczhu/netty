@@ -72,17 +72,24 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
             throw new IllegalArgumentException(String.format("nThreads: %d (expected: > 0)", nThreads));
         }
 
+        // 类名为名称的线程工厂
+        // 该线程池没有任何队列，提交任务后，创建任何线程类型都是 FastThreadLocalRunnable, 并且立即start。
         if (executor == null) {
             executor = new ThreadPerTaskExecutor(newDefaultThreadFactory());
         }
 
+        // 创建一个事件执行组
         children = new EventExecutor[nThreads];
 
+        // 初始化线程数组
         for (int i = 0; i < nThreads; i ++) {
             boolean success = false;
             try {
+
+                // 创建 new NioEventLoop
                 children[i] = newChild(executor, args);
                 success = true;
+
             } catch (Exception e) {
                 // TODO: Think about if this is a good exception type
                 throw new IllegalStateException("failed to create a child event loop", e);
@@ -110,6 +117,7 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
 
         chooser = chooserFactory.newChooser(children);
 
+        //为每一个单例线程池添加一个关闭监听器。
         final FutureListener<Object> terminationListener = new FutureListener<Object>() {
             @Override
             public void operationComplete(Future<Object> future) throws Exception {
