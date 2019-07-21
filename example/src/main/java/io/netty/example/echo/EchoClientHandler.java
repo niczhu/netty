@@ -30,13 +30,18 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter {
     private final ByteBuf firstMessage;
 
     /**
+     *
+     *          TODO:在此处client发送消息
+     *          通过 ByteBuffer
+     *
      * Creates a client-side handler.
      */
     public EchoClientHandler() {
         firstMessage = Unpooled.buffer(EchoClient.SIZE);
-        for (int i = 0; i < firstMessage.capacity(); i ++) {
-            firstMessage.writeByte((byte) i);
-        }
+//        for (int i = 0; i < firstMessage.capacity(); i ++) {
+//            firstMessage.writeByte((byte) i);
+//        }
+        firstMessage.writeBytes("hello netty ".getBytes());
     }
 
     @Override

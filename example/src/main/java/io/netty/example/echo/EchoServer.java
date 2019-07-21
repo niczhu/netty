@@ -63,7 +63,7 @@ public final class EchoServer {
             // 创建 ServerBootstrap 对象
             ServerBootstrap b = new ServerBootstrap();
 
-            b.group(bossGroup, workerGroup)
+            b.group(bossGroup, workerGroup)  //绑定reactor线程池
              .channel(NioServerSocketChannel.class) // 反射创建channel
              .option(ChannelOption.SO_BACKLOG, 100) // 设置 NioServerSocketChannel 的可选项
              .handler(new LoggingHandler(LogLevel.INFO))  // 设置 NioServerSocketChannel 的处理器
